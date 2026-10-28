@@ -141,6 +141,7 @@ export async function GET() {
     return NextResponse.json({
       name: user.name || "Prashu",
       email: user.email || "prashuk2002@gmail.com",
+      github: "gollasaisre",
       headline: p?.headline || "Software Engineer & Full Stack Developer",
       bio: p?.bio || "Passionate engineer building scalable applications and high-performance systems.",
       location: p?.location || "India",
@@ -266,6 +267,7 @@ export async function POST(request: Request) {
       message: "Profile saved directly to database!",
       name: updateUserData.name || user.name,
       email: updateUserData.email || user.email,
+      github: data.github || "gollasaisre",
       ...profile,
       careerReadiness: profile.careerReadiness
     });

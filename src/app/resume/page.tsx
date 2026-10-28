@@ -31,7 +31,7 @@ export default function ResumeBuilder() {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [linkedin, setLinkedin] = useState("");
-  const [github, setGithub] = useState("");
+  const [github, setGithub] = useState("github.com/gollasaisre");
   const [portfolio, setPortfolio] = useState("");
   const [summary, setSummary] = useState("");
   const [education, setEducation] = useState("");
@@ -51,7 +51,7 @@ export default function ResumeBuilder() {
           setFullName(data.fullName || ""); setJobTitle(data.jobTitle || "");
           setEmail(data.email || ""); setPhone(data.phone || "");
           setAddress(data.address || ""); setLinkedin(data.linkedin || "");
-          setGithub(data.github || ""); setPortfolio(data.portfolio || "");
+          setGithub(data.github || "github.com/gollasaisre"); setPortfolio(data.portfolio || "");
           setSummary(data.summary || ""); setEducation(data.education || "");
           setTechnicalSkills(data.technicalSkills || ""); setKnownLanguages(data.knownLanguages || "");
           setHobbies(data.hobbies || ""); setExperience(data.experience || []);
@@ -134,7 +134,7 @@ export default function ResumeBuilder() {
               <div className="space-y-1.5"><label className={labelClass}>Phone</label><input type="tel" value={phone} onChange={e => setPhone(e.target.value)} className={inputClass} placeholder="+1 (555) 000-0000" /></div>
               <div className="space-y-1.5 col-span-2"><label className={labelClass}>Location</label><input type="text" value={address} onChange={e => setAddress(e.target.value)} className={inputClass} placeholder="San Francisco, CA" /></div>
               <div className="space-y-1.5"><label className={labelClass}>LinkedIn</label><input type="text" value={linkedin} onChange={e => setLinkedin(e.target.value)} className={inputClass} placeholder="linkedin.com/in/alex" /></div>
-              <div className="space-y-1.5"><label className={labelClass}>GitHub</label><input type="text" value={github} onChange={e => setGithub(e.target.value)} className={inputClass} placeholder="github.com/alex" /></div>
+              <div className="space-y-1.5"><label className={labelClass}>GitHub</label><input type="text" value={github} onChange={e => setGithub(e.target.value)} className={inputClass} placeholder="github.com/gollasaisre" /></div>
               <div className="space-y-1.5 col-span-2"><label className={labelClass}>Portfolio</label><input type="text" value={portfolio} onChange={e => setPortfolio(e.target.value)} className={inputClass} placeholder="alex.dev" /></div>
             </div>
           </div>
