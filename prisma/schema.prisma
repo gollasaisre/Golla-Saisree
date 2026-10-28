@@ -1,0 +1,303 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  password      String?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  profile       Profile?
+  userSkills    UserSkill[]
+  resumes       Resume[]
+  
+  recommendations CareerRecommendation[]
+  assessmentResults AssessmentResult[]
+  roadmapProgress   RoadmapProgress[]
+  courseProgress    CourseProgress[]
+  favoriteCareers   FavoriteCareer[]
+  agentSessions     AgentSession[]
+  jobApplications   JobApplication[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Profile {
+  id              String  @id @default(cuid())
+  userId          String  @unique
+  user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  headline        String?
+  bio             String?
+  location        String?
+  targetRole      String?
+  
+  // New AI context fields
+  education       String?
+  interests       String?
+  careerGoals     String?
+  strengths       String?
+  preferredWorkType String? // Remote, Hybrid, On-site
+  
+  careerReadiness Int @default(0) // Percentage 0-100
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Skill {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  category    String?
+  userSkills  UserSkill[]
+  courses     Course[]
+  
+  createdAt DateTime @default(now())
+}
+
+model UserSkill {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skillId     String
+  skill       Skill    @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  proficiency String   // e.g., "Beginner", "Intermediate", "Advanced"
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, skillId])
+}
+
+model Career {
+  id              String   @id @default(cuid())
+  title           String   @unique
+  description     String?
+  matchScore      Int?
+  
+  recommendations CareerRecommendation[]
+  roadmaps        CareerRoadmap[]
+  favorites       FavoriteCareer[]
+  
+  createdAt DateTime @default(now())
+}
+
+model Resume {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content   String   // JSON string storing resume data
+  template  String   @default("modern")
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model StudyMaterial {
+  id          String   @id @default(cuid())
+  title       String
+  language    String   // e.g., "Java", "Python"
+  description String?
+  contentUrl  String?
+  type        String   @default("text") // "text", "video", "interactive"
+  
+  createdAt   DateTime @default(now())
+}
+
+model InterviewQuestion {
+  id             String   @id @default(cuid())
+  role           String   // e.g., "Java Backend Developer"
+  category       String   // e.g., "Technical", "Aptitude"
+  question       String
+  expectedAnswer String?
+  difficulty     String   // "Easy", "Medium", "Hard"
+  
+  createdAt      DateTime @default(now())
+}
+
+model CareerRecommendation {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  careerId      String
+  career        Career   @relation(fields: [careerId], references: [id], onDelete: Cascade)
+  matchScore    Int
+  matchReason   String
+  missingSkills String   // JSON array of skill names
+  nextSteps     String   // JSON array of strings
+  
+  createdAt     DateTime @default(now())
+}
+
+model SkillAssessment {
+  id          String   @id @default(cuid())
+  title       String
+  category    String   // Programming, Problem Solving, Communication, etc.
+  questions   String   // JSON array of questions [{q, options, correct}]
+  
+  results     AssessmentResult[]
+  
+  createdAt   DateTime @default(now())
+}
+
+model AssessmentResult {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assessmentId  String
+  assessment    SkillAssessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  score         Int
+  strengths     String   // JSON array
+  weaknesses    String   // JSON array
+  
+  createdAt     DateTime @default(now())
+}
+
+model CareerRoadmap {
+  id          String   @id @default(cuid())
+  careerId    String
+  career      Career   @relation(fields: [careerId], references: [id], onDelete: Cascade)
+  level       String   // Beginner, Intermediate, Advanced
+  steps       String   // JSON array of steps/milestones
+  
+  progress    RoadmapProgress[]
+  
+  createdAt   DateTime @default(now())
+}
+
+model RoadmapProgress {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  roadmapId      String
+  roadmap        CareerRoadmap @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+  completedSteps String   // JSON array of completed step string IDs
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Course {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  level       String   // Beginner, Intermediate, Advanced
+  url         String
+  skillId     String?
+  skill       Skill?   @relation(fields: [skillId], references: [id], onDelete: SetNull)
+  
+  progress    CourseProgress[]
+  
+  createdAt   DateTime @default(now())
+}
+
+model CourseProgress {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  completed   Boolean  @default(false)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Job {
+  id          String   @id @default(cuid())
+  title       String
+  company     String
+  location    String
+  type        String   // Full-time, Remote, etc.
+  experience  String
+  skills      String   // JSON array
+  description String
+  department  String?  // New field for department grouping
+  isFuture    Boolean  @default(false) // Indicates future job listing
+  
+  applications JobApplication[]
+  
+  createdAt   DateTime @default(now())
+}
+
+model FavoriteCareer {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  careerId    String
+  career      Career   @relation(fields: [careerId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+  
+  @@unique([userId, careerId])
+}
+
+model AgentSession {
+  id          String   @id @default(cuid())
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  state       String   // JSON string storing conversation state
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model JobApplication {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobId     String
+  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  status    String   @default("Applied") // "Applied", "Interviewing", "Offered", "Rejected"
+  appliedAt DateTime @default(now())
+  notes     String?
+  
+  @@unique([userId, jobId])
+}
