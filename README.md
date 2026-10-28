@@ -1,36 +1,148 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CareerPilot AI — Autonomous Career Intelligence & ATS Platform
 
-## Getting Started
+An AI-powered career mentor, neural skill roadmaps, and future job intelligence platform designed for engineers across multiple disciplines (CSE, IT, ECE, EEE, Mechanical, Civil, Automobile).
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🚀 Live Demo & Links
+
+- **Live Production URL**: [https://gollasaisre.github.io/Golla-Saisree/](https://gollasaisre.github.io/Golla-Saisree/)
+- **GitHub Repository**: [https://github.com/gollasaisre/Golla-Saisree](https://github.com/gollasaisre/Golla-Saisree)
+- **Secondary Repository**: [https://github.com/gollasaisre/smart-career-](https://github.com/gollasaisre/smart-career-)
+
+---
+
+## 🛠️ Technology Stack
+
+- **Framework**: Next.js 16.3 (Turbopack) & React 19
+- **Language**: TypeScript 5
+- **Styling**: Tailwind CSS v4, Glassmorphism UI
+- **Database & ORM**: SQLite (`dev.db`), Prisma ORM 6.19
+- **Authentication**: NextAuth.js
+- **AI Integration**: Google Gemini API (`@google/genai`)
+- **Icons**: Lucide React
+- **CI/CD & Hosting**: GitHub Actions & GitHub Pages (Static Export) / Vercel-ready
+
+---
+
+## 📁 Folder Structure
+
+```
+├── .github/
+│   └── workflows/
+│       └── deploy.yml          # Automated CI/CD pipeline for GitHub Pages
+├── prisma/
+│   ├── schema.prisma          # Database schema (User, Profile, Skill, Career, Jobs, Assessment)
+│   ├── seed.ts                # Database seed script with sample data
+│   └── prisma.config.ts       # Prisma configuration
+├── public/
+│   ├── .nojekyll              # Disables Jekyll processing on GitHub Pages
+│   └── favicon.ico            # Site favicon
+├── src/
+│   ├── app/
+│   │   ├── agent/page.tsx     # Autonomous AI Career Agent chat
+│   │   ├── api/               # Serverless API routes (profile, jobs, recommendations)
+│   │   ├── assessment/        # Technical skill assessments and quiz engine
+│   │   ├── chat/              # AI Career Mentor interactive chat
+│   │   ├── dashboard/         # User career analytics and readiness dashboard
+│   │   ├── jobs/              # Curated engineering jobs and internship portal
+│   │   ├── prep/              # Placement interview prep and practice modules
+│   │   ├── profile/           # User portfolio, skills management, and GitHub sync
+│   │   ├── recommendations/   # AI-powered career matching recommendations
+│   │   ├── resume/            # ATS split-screen resume builder with live preview
+│   │   ├── roadmap/[id]/      # Interactive department career roadmaps
+│   │   ├── study/             # Department study guides and curriculum resources
+│   │   ├── tracker/           # Job application Kanban tracking board
+│   │   ├── layout.tsx         # Root app layout & theme provider
+│   │   └── page.tsx           # Modern animated landing page
+│   ├── components/
+│   │   ├── layout/AppShell.tsx# Main layout wrapper (sidebar & header)
+│   │   ├── ui/Header.tsx      # Top bar navigation & GitHub quick-link
+│   │   └── ui/Sidebar.tsx     # Collapsible navigation sidebar
+│   ├── data/
+│   │   └── departmentCourses.ts# Curated study curriculum & course data
+│   └── lib/
+│       ├── ai.ts              # Gemini AI service integration
+│       ├── auth.ts            # NextAuth options & security
+│       └── prisma.ts          # Singleton Prisma client instance
+├── .env.example               # Template environment configuration
+├── next.config.ts             # Dynamic Next.js static export & multi-repo basePath config
+├── package.json               # Dependencies and build scripts
+└── tailwind.config.js         # Tailwind theme & design tokens
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📋 Prerequisites
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Node.js**: `v20.x` or higher (LTS recommended)
+- **Package Manager**: `npm` (v10+), `yarn`, or `pnpm`
+- **Git**: Installed and configured on your system
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 💻 Installation & Local Development (Windows / macOS / Linux)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/gollasaisre/Golla-Saisree.git
+   cd Golla-Saisree
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-## Deploy on Vercel
+3. **Configure environment variables**:
+   Create a `.env` file from `.env.example`:
+   ```bash
+   cp .env.example .env
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4. **Initialize database & generate Prisma client**:
+   ```bash
+   npx prisma generate
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+5. **Start local development server**:
+   ```bash
+   npm run dev
+   ```
+
+6. **Open in browser**:
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+---
+
+## 🏗️ Production Build Commands
+
+```bash
+# Build production bundle
+npm run build
+
+# Start production server
+npm run start
+```
+
+---
+
+## 🚀 Deployment
+
+### Option A: GitHub Pages (Automated via GitHub Actions)
+Every `git push` to `main` automatically triggers `.github/workflows/deploy.yml`.
+Ensure GitHub repository settings have:
+- **Settings** -> **Pages** -> **Source**: select **"GitHub Actions"**.
+
+### Option B: Vercel (1-Click Deployment)
+1. Navigate to [https://vercel.com/new](https://vercel.com/new).
+2. Connect your GitHub account and import `gollasaisre/Golla-Saisree`.
+3. Click **Deploy**. Vercel natively supports all dynamic API routes and SSR features.
+
+---
+
+## 🔧 Troubleshooting
+
+- **Localhost 404 Error**: Ensure `basePath` is empty locally (handled automatically by `next.config.ts`).
+- **Styles missing on GitHub Pages**: Ensure `public/.nojekyll` exists so GitHub doesn't ignore `_next` assets.
+- **Port 3000 in use**: Run `taskkill /PID <PID> /F` (Windows) or `kill -9 $(lsof -t -i:3000)` (Mac/Linux).
