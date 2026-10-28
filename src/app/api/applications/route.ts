@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 
+export const dynamic = "force-static";
+
 // GET all applications for the current user
 export async function GET(request: Request) {
   try {

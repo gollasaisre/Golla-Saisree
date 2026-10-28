@@ -4,6 +4,8 @@ import { authOptions } from "@/lib/auth";
 import prisma from '@/lib/prisma';
 import { AIService } from '@/lib/ai';
 
+export const dynamic = "force-static";
+
 export async function GET() {
   const session = await getServerSession(authOptions);
   

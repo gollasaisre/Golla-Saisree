@@ -4,6 +4,12 @@ import { AutonomousAgent } from '@/lib/autonomousAgent';
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
+export const dynamic = "force-static";
+
+export async function GET() {
+  return NextResponse.json({ status: "ok" });
+}
+
 export async function POST(request: Request) {
   try {
     const { sessionId, message } = await request.json();

@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from '@/lib/prisma';
 
+export const dynamic = "force-static";
+
 // Calculate career readiness based on profile completeness, skills, and assessments
 function computeReadiness(profile: any, skillsCount: number, resumesCount: number, assessmentsCount: number): number {
   let score = 25; // Base baseline

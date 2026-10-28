@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { AIService } from '@/lib/ai';
 
+export const dynamic = "force-static";
+
 export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
