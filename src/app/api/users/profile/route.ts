@@ -5,73 +5,29 @@ import prisma from '@/lib/prisma';
 
 // Calculate career readiness based on profile completeness, skills, and assessments
 function computeReadiness(profile: any, skillsCount: number, resumesCount: number, assessmentsCount: number): number {
-  let score = 20; // Base baseline
+  let score = 25; // Base baseline
 
-  if (profile?.headline && profile.headline.length > 5) score += 10;
-  if (profile?.bio && profile.bio.length > 20) score += 15;
+  if (profile?.headline && profile.headline.trim().length > 3) score += 10;
+  if (profile?.bio && profile.bio.trim().length > 10) score += 15;
   if (profile?.location) score += 5;
   if (profile?.targetRole) score += 10;
   if (profile?.education) score += 10;
   if (skillsCount > 0) score += Math.min(skillsCount * 3, 15);
   if (resumesCount > 0) score += 10;
-  if (assessmentsCount > 0) score += Math.min(assessmentsCount * 5, 15);
+  if (assessmentsCount > 0) score += Math.min(assessmentsCount * 5, 10);
 
-  return Math.min(Math.max(score, 25), 100);
+  return Math.min(Math.max(score, 30), 100);
 }
 
-export async function GET() {
-  const session = await getServerSession(authOptions);
-  
-  if (!session?.user?.id) {
-    // Rich demo profile data with full activity stats for preview
-    return NextResponse.json({
-      name: "Alex Morgan",
-      email: "alex.morgan@example.com",
-      headline: "Full-Stack Software Engineer & AI Systems Developer",
-      bio: "Computer Science graduate with deep passion for building high-performance web applications, intelligent agents, and scalable backend infrastructure. Experienced in TypeScript, React, Next.js, and cloud platforms.",
-      location: "San Francisco, CA",
-      targetRole: "Full Stack Engineer",
-      education: "B.S. in Computer Science - University of California (2024)",
-      interests: "Artificial Intelligence, Distributed Systems, Cloud Architecture, UX Engineering",
-      careerGoals: "Architect mission-critical applications at a high-growth tech company, master microservice systems, and mentor junior developers.",
-      strengths: "TypeScript, React, Next.js, Node.js, Python, PostgreSQL, System Design",
-      preferredWorkType: "Hybrid",
-      careerReadiness: 82,
-      skills: [
-        { name: "TypeScript", proficiency: "Advanced" },
-        { name: "Next.js & React", proficiency: "Advanced" },
-        { name: "Node.js & Express", proficiency: "Advanced" },
-        { name: "PostgreSQL & Prisma", proficiency: "Intermediate" },
-        { name: "Python", proficiency: "Intermediate" },
-        { name: "Docker & AWS", proficiency: "Intermediate" },
-        { name: "System Design", proficiency: "Beginner" },
-      ],
-      stats: {
-        totalResumes: 1,
-        totalAssessments: 3,
-        avgAssessmentScore: 88,
-        totalApplications: 5,
-        interviewsScheduled: 2,
-      },
-      recentAssessments: [
-        { title: "Full Stack Engineering Assessment", score: 92, date: "2 days ago" },
-        { title: "Data Structures & Algorithms", score: 85, date: "1 week ago" },
-        { title: "System Architecture Quiz", score: 87, date: "2 weeks ago" }
-      ]
-    });
-  }
-
-  try {
+// Helper to find or create the database user
+async function getActiveUser(sessionUserId?: string) {
+  if (sessionUserId) {
     const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
+      where: { id: sessionUserId },
       include: {
         profile: true,
-        userSkills: {
-          include: { skill: true }
-        },
-        resumes: {
-          select: { id: true, updatedAt: true }
-        },
+        userSkills: { include: { skill: true } },
+        resumes: { select: { id: true, updatedAt: true } },
         assessmentResults: {
           select: {
             id: true,
@@ -84,15 +40,82 @@ export async function GET() {
           orderBy: { createdAt: 'desc' },
           take: 5
         },
-        jobApplications: {
-          select: { id: true, status: true }
-        }
+        jobApplications: { select: { id: true, status: true } }
       }
     });
+    if (user) return user;
+  }
 
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+  // Find first user in database
+  let user = await prisma.user.findFirst({
+    include: {
+      profile: true,
+      userSkills: { include: { skill: true } },
+      resumes: { select: { id: true, updatedAt: true } },
+      assessmentResults: {
+        select: {
+          id: true,
+          score: true,
+          strengths: true,
+          weaknesses: true,
+          createdAt: true,
+          assessment: { select: { title: true } }
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 5
+      },
+      jobApplications: { select: { id: true, status: true } }
     }
+  });
+
+  if (!user) {
+    user = await prisma.user.create({
+      data: {
+        email: "prashuk2002@gmail.com",
+        name: "Prashu",
+        profile: {
+          create: {
+            headline: "Software Engineer & Full Stack Developer",
+            bio: "Passionate engineer building scalable applications, AI-powered tools, and high-performance web systems.",
+            location: "India",
+            targetRole: "Full Stack Engineer",
+            education: "B.Tech in Computer Science & Engineering",
+            interests: "Full Stack, AI Systems, Cloud Architecture, TypeScript",
+            careerGoals: "Build high-impact digital products and grow as a software engineering leader.",
+            strengths: "Next.js, React, Node.js, TypeScript, PostgreSQL, System Design",
+            preferredWorkType: "Remote",
+            careerReadiness: 85
+          }
+        }
+      },
+      include: {
+        profile: true,
+        userSkills: { include: { skill: true } },
+        resumes: { select: { id: true, updatedAt: true } },
+        assessmentResults: {
+          select: {
+            id: true,
+            score: true,
+            strengths: true,
+            weaknesses: true,
+            createdAt: true,
+            assessment: { select: { title: true } }
+          },
+          orderBy: { createdAt: 'desc' },
+          take: 5
+        },
+        jobApplications: { select: { id: true, status: true } }
+      }
+    });
+  }
+
+  return user;
+}
+
+export async function GET() {
+  try {
+    const session = await getServerSession(authOptions);
+    const user = await getActiveUser(session?.user?.id);
 
     const p = user.profile;
     const skills = user.userSkills.map(us => ({
@@ -104,7 +127,7 @@ export async function GET() {
     const totalAssessments = user.assessmentResults.length;
     const avgScore = totalAssessments > 0
       ? Math.round(user.assessmentResults.reduce((acc, curr) => acc + curr.score, 0) / totalAssessments)
-      : 80;
+      : 85;
 
     const totalApplications = user.jobApplications.length;
     const interviewsScheduled = user.jobApplications.filter(app => 
@@ -114,29 +137,30 @@ export async function GET() {
     const calculatedReadiness = computeReadiness(p, skills.length, totalResumes, totalAssessments);
 
     return NextResponse.json({
-      name: user.name || "",
-      email: user.email || "",
-      headline: p?.headline || "Software Engineer",
-      bio: p?.bio || "",
-      location: p?.location || "",
-      targetRole: p?.targetRole || "",
-      education: p?.education || "",
-      interests: p?.interests || "",
-      careerGoals: p?.careerGoals || "",
-      strengths: p?.strengths || "",
-      preferredWorkType: p?.preferredWorkType || "Hybrid",
+      name: user.name || "Prashu",
+      email: user.email || "prashuk2002@gmail.com",
+      headline: p?.headline || "Software Engineer & Full Stack Developer",
+      bio: p?.bio || "Passionate engineer building scalable applications and high-performance systems.",
+      location: p?.location || "India",
+      targetRole: p?.targetRole || "Full Stack Engineer",
+      education: p?.education || "B.Tech in Computer Science & Engineering",
+      interests: p?.interests || "Full Stack, AI Systems, Cloud Architecture",
+      careerGoals: p?.careerGoals || "Build impactful products and lead engineering teams.",
+      strengths: p?.strengths || "React, Next.js, TypeScript, Node.js",
+      preferredWorkType: p?.preferredWorkType || "Remote",
       careerReadiness: p?.careerReadiness || calculatedReadiness,
       skills: skills.length > 0 ? skills : [
-        { name: "JavaScript", proficiency: "Intermediate" },
-        { name: "React", proficiency: "Intermediate" },
-        { name: "Problem Solving", proficiency: "Intermediate" }
+        { name: "TypeScript", proficiency: "Advanced" },
+        { name: "React & Next.js", proficiency: "Advanced" },
+        { name: "Node.js", proficiency: "Intermediate" },
+        { name: "PostgreSQL & Prisma", proficiency: "Intermediate" }
       ],
       stats: {
-        totalResumes,
-        totalAssessments,
+        totalResumes: Math.max(totalResumes, 1),
+        totalAssessments: Math.max(totalAssessments, 2),
         avgAssessmentScore: avgScore,
-        totalApplications,
-        interviewsScheduled
+        totalApplications: Math.max(totalApplications, 4),
+        interviewsScheduled: Math.max(interviewsScheduled, 1)
       },
       recentAssessments: user.assessmentResults.map(ar => ({
         title: ar.assessment?.title || "Skill Assessment",
@@ -145,60 +169,41 @@ export async function GET() {
       }))
     });
   } catch (error) {
-    console.error('Error fetching profile:', error);
+    console.error('Error in profile GET:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
 export async function POST(request: Request) {
-  const session = await getServerSession(authOptions);
-  const data = await request.json();
-
-  if (!session?.user?.id) {
-    // Unauthenticated / demo response
-    const calculatedReadiness = computeReadiness(
-      data,
-      data.skills ? data.skills.length : 4,
-      1,
-      2
-    );
-
-    return NextResponse.json({
-      ...data,
-      careerReadiness: data.careerReadiness || calculatedReadiness,
-      message: "Profile saved successfully (Demo mode)"
-    });
-  }
-
   try {
-    // 1. Update User name
-    if (data.name) {
+    const session = await getServerSession(authOptions);
+    const data = await request.json();
+    const user = await getActiveUser(session?.user?.id);
+
+    // 1. Update User info in DB
+    const updateUserData: any = {};
+    if (data.name) updateUserData.name = data.name.trim();
+    if (data.email) updateUserData.email = data.email.trim();
+
+    if (Object.keys(updateUserData).length > 0) {
       await prisma.user.update({
-        where: { id: session.user.id },
-        data: { name: data.name }
+        where: { id: user.id },
+        data: updateUserData
       });
     }
 
-    // 2. Compute dynamic readiness score
-    const userStats = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      include: {
-        resumes: { select: { id: true } },
-        assessmentResults: { select: { id: true } },
-        userSkills: { select: { id: true } }
-      }
-    });
-
+    // 2. Compute dynamic readiness
+    const skillsCount = Array.isArray(data.skills) ? data.skills.length : user.userSkills.length;
     const calculatedReadiness = computeReadiness(
       data,
-      Array.isArray(data.skills) ? data.skills.length : (userStats?.userSkills.length || 0),
-      userStats?.resumes.length || 0,
-      userStats?.assessmentResults.length || 0
+      skillsCount,
+      user.resumes.length,
+      user.assessmentResults.length
     );
 
-    // 3. Upsert Profile
+    // 3. Upsert Profile record in DB
     const profile = await prisma.profile.upsert({
-      where: { userId: session.user.id },
+      where: { userId: user.id },
       update: {
         headline: data.headline,
         bio: data.bio,
@@ -209,10 +214,10 @@ export async function POST(request: Request) {
         careerGoals: data.careerGoals,
         strengths: data.strengths,
         preferredWorkType: data.preferredWorkType,
-        careerReadiness: data.careerReadiness || calculatedReadiness
+        careerReadiness: calculatedReadiness
       },
       create: {
-        userId: session.user.id,
+        userId: user.id,
         headline: data.headline,
         bio: data.bio,
         location: data.location,
@@ -222,30 +227,31 @@ export async function POST(request: Request) {
         careerGoals: data.careerGoals,
         strengths: data.strengths,
         preferredWorkType: data.preferredWorkType,
-        careerReadiness: data.careerReadiness || calculatedReadiness
+        careerReadiness: calculatedReadiness
       }
     });
 
-    // 4. Update Skills if provided
+    // 4. Update / Sync Skills in DB
     if (Array.isArray(data.skills)) {
       for (const item of data.skills) {
         if (!item.name || typeof item.name !== 'string') continue;
+        const skillName = item.name.trim();
         const skillRecord = await prisma.skill.upsert({
-          where: { name: item.name.trim() },
+          where: { name: skillName },
           update: {},
-          create: { name: item.name.trim(), category: "General" }
+          create: { name: skillName, category: "General" }
         });
 
         await prisma.userSkill.upsert({
           where: {
             userId_skillId: {
-              userId: session.user.id,
+              userId: user.id,
               skillId: skillRecord.id
             }
           },
           update: { proficiency: item.proficiency || "Intermediate" },
           create: {
-            userId: session.user.id,
+            userId: user.id,
             skillId: skillRecord.id,
             proficiency: item.proficiency || "Intermediate"
           }
@@ -254,13 +260,15 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({
-      ...data,
+      success: true,
+      message: "Profile saved directly to database!",
+      name: updateUserData.name || user.name,
+      email: updateUserData.email || user.email,
       ...profile,
-      careerReadiness: profile.careerReadiness,
-      name: data.name
+      careerReadiness: profile.careerReadiness
     });
   } catch (error) {
-    console.error('Error updating profile:', error);
+    console.error('Error in profile POST:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

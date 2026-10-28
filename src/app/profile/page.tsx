@@ -136,11 +136,23 @@ export default function ProfilePage() {
 
       if (res.ok) {
         const data = await res.json();
-        if (data.careerReadiness) {
-          setProfile((prev) => ({ ...prev, careerReadiness: data.careerReadiness }));
-        }
+        setProfile((prev) => ({
+          ...prev,
+          name: data.name || prev.name,
+          email: data.email || prev.email,
+          headline: data.headline || prev.headline,
+          bio: data.bio || prev.bio,
+          location: data.location || prev.location,
+          targetRole: data.targetRole || prev.targetRole,
+          education: data.education || prev.education,
+          interests: data.interests || prev.interests,
+          careerGoals: data.careerGoals || prev.careerGoals,
+          strengths: data.strengths || prev.strengths,
+          preferredWorkType: data.preferredWorkType || prev.preferredWorkType,
+          careerReadiness: data.careerReadiness || prev.careerReadiness,
+        }));
         setSaveStatus("success");
-        setTimeout(() => setSaveStatus("idle"), 3500);
+        setTimeout(() => setSaveStatus("idle"), 4000);
       } else {
         setSaveStatus("error");
       }
@@ -564,8 +576,9 @@ export default function ProfilePage() {
                 <input
                   type="email"
                   value={profile.email}
-                  disabled
-                  className={`${inputClass} opacity-70 cursor-not-allowed`}
+                  onChange={(e) => setProfile({ ...profile, email: e.target.value })}
+                  className={inputClass}
+                  placeholder="your.email@example.com"
                 />
               </div>
 
