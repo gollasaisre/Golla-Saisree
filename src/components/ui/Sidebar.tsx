@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   Home, Compass, Map, MessageSquare, Briefcase, FileText,
   BookOpen, GraduationCap, Brain, Settings, Bot, Sparkles,
-  ChevronLeft, ChevronRight
+  ChevronLeft, ChevronRight, User
 } from "lucide-react";
 import { useState } from "react";
 
@@ -31,6 +31,7 @@ const navigation: NavItem[] = [
 ];
 
 const bottomNav: NavItem[] = [
+  { name: "My Profile", href: "/profile", icon: User },
   { name: "Settings", href: "/settings", icon: Settings },
 ];
 

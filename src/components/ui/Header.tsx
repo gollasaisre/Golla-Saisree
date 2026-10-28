@@ -1,6 +1,7 @@
 "use client";
 
 import { Sun, Moon, Bell, Search, Command, Menu, X } from "lucide-react";
+import Link from "next/link";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
@@ -87,10 +88,14 @@ export default function Header() {
         )}
 
         {/* User Avatar */}
-        <button className="relative ml-1 w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white flex items-center justify-center text-sm font-bold shadow-md shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200 hover:scale-105 active:scale-95">
+        <Link
+          href="/profile"
+          title="My Profile"
+          className="relative ml-1 w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white flex items-center justify-center text-sm font-bold shadow-md shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200 hover:scale-105 active:scale-95"
+        >
           A
           <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-white dark:border-slate-900" />
-        </button>
+        </Link>
       </div>
     </header>
   );
