@@ -17,6 +17,93 @@ interface Job {
   match?: number;
 }
 
+const DEFAULT_JOBS: Job[] = [
+  {
+    id: "1",
+    title: "Full Stack Software Engineer",
+    company: "Google",
+    location: "Bangalore, India (Hybrid)",
+    type: "Full-time",
+    experience: "Entry - 2 Years",
+    department: "CSE",
+    skills: JSON.stringify(["React", "TypeScript", "Node.js", "Cloud"]),
+    description: "Design and implement scalable full-stack web architectures and microservices.",
+    match: 95,
+  },
+  {
+    id: "2",
+    title: "AI/ML Solutions Associate",
+    company: "Microsoft",
+    location: "Hyderabad, India (Remote)",
+    type: "Full-time",
+    experience: "0 - 1 Year",
+    department: "IT",
+    skills: JSON.stringify(["Python", "PyTorch", "LLMs", "Azure"]),
+    description: "Build cutting-edge generative AI applications and retrieval-augmented pipelines.",
+    match: 92,
+  },
+  {
+    id: "3",
+    title: "Embedded Systems & Firmware Engineer",
+    company: "Qualcomm",
+    location: "Bangalore, India",
+    type: "Full-time",
+    experience: "Fresh Graduate",
+    department: "ECE",
+    skills: JSON.stringify(["Embedded C", "ARM Cortex", "RTOS", "Verilog"]),
+    description: "Develop low-level drivers and firmware for next-generation mobile silicon.",
+    match: 89,
+  },
+  {
+    id: "4",
+    title: "Power Systems & IoT Engineer",
+    company: "Schneider Electric",
+    location: "Chennai, India",
+    type: "Full-time",
+    experience: "1 - 3 Years",
+    department: "EEE",
+    skills: JSON.stringify(["SCADA", "Power Electronics", "PLC", "Smart Grid"]),
+    description: "Optimize smart grid energy distributions and industrial control automation.",
+    match: 87,
+  },
+  {
+    id: "5",
+    title: "Robotics & CAD Automation Engineer",
+    company: "Tesla",
+    location: "Pune, India",
+    type: "Full-time",
+    experience: "Entry Level",
+    department: "MECHANICAL",
+    skills: JSON.stringify(["SolidWorks", "ANSYS", "Finite Element Analysis", "Robotics"]),
+    description: "Model structural vehicle dynamics and simulate high-performance thermal cycles.",
+    match: 91,
+  },
+  {
+    id: "6",
+    title: "Autonomous Vehicle Systems Specialist",
+    company: "Tata Motors",
+    location: "Pune, India",
+    type: "Full-time",
+    experience: "1 - 2 Years",
+    department: "AUTOMOBILE",
+    skills: JSON.stringify(["CAN Bus", "ADAS", "Automotive Dynamics", "MATLAB"]),
+    description: "Engineer battery management and sensor fusion for electric vehicles.",
+    match: 88,
+  },
+  {
+    id: "7",
+    title: "BIM & Structural Design Engineer",
+    company: "Larsen & Toubro",
+    location: "Mumbai, India",
+    type: "Full-time",
+    experience: "Fresh Graduate",
+    department: "CIVIL",
+    skills: JSON.stringify(["AutoCAD", "Revit", "STAAD Pro", "Structural Analysis"]),
+    description: "Produce structural designs and sustainability models for mega infrastructure projects.",
+    match: 86,
+  },
+];
+
 export default function JobsPage() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
@@ -26,8 +113,10 @@ export default function JobsPage() {
     fetch('/api/jobs')
       .then(res => res.json())
       .then(data => {
-        if (Array.isArray(data)) {
+        if (Array.isArray(data) && data.length > 0) {
           setJobs(data);
+        } else {
+          setJobs(DEFAULT_JOBS);
         }
         return fetch('/api/applications');
       })
@@ -39,6 +128,7 @@ export default function JobsPage() {
       })
       .catch(err => {
         console.error('Failed to fetch jobs or applications', err);
+        setJobs(DEFAULT_JOBS);
       })
       .finally(() => {
         setLoading(false);
