@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   Home, Compass, Map, MessageSquare, Briefcase, FileText,
   BookOpen, GraduationCap, Brain, Settings, Bot, Sparkles,
-  ChevronLeft, ChevronRight, User
+  ChevronLeft, ChevronRight, User, Award, CheckSquare, MessageCircle
 } from "lucide-react";
 import { useState } from "react";
 
@@ -23,10 +23,13 @@ const navigation: NavItem[] = [
   { name: "Jobs", href: "/jobs", icon: Briefcase },
   { name: "Tracker", href: "/tracker", icon: Map },
   { name: "Skill Assessment", href: "/assessment", icon: Brain },
-  { name: "Placement Prep", href: "/prep", icon: GraduationCap },
+  { name: "Placement Prep", href: "/prep", icon: GraduationCap, badge: "16 Trk" },
+  { name: "Assignments", href: "/assignments", icon: CheckSquare, badge: "New" },
+  { name: "Soft Skills", href: "/soft-skills", icon: Award, badge: "12 Cat" },
+  { name: "Communication", href: "/communication", icon: MessageCircle, badge: "Lab" },
   { name: "Study Material", href: "/study", icon: BookOpen },
   { name: "Resume Builder", href: "/resume", icon: FileText },
-  { name: "Career Pilot", href: "/agent", icon: Bot, badge: "New" },
+  { name: "Career Pilot", href: "/agent", icon: Bot, badge: "AI" },
   { name: "AI Mentor", href: "/chat", icon: MessageSquare },
 ];
 

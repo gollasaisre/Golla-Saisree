@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CareerPilot AI - Page Redirect</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    // GitHub Pages SPA redirect
+    // If the path does not end with / or .html, try adding /
+    (function() {
+      var path = window.location.pathname;
+      // If path doesn't end with slash and doesn't have an extension
+      if (!path.endsWith('/') && !path.split('/').pop().includes('.')) {
+        window.location.replace(path + '/' + window.location.search + window.location.hash);
+        return;
+      }
+    })();
+  </script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #0f172a;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .card {
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 480px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    p {
+      color: #94a3b8;
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    a.btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: #fff;
+      text-decoration: none;
+      padding: 12px 28px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 14px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    a.btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>CareerPilot AI</h1>
+    <p>Navigating to requested section or return to main dashboard.</p>
+    <a href="./" class="btn" id="homeLink">Return to Platform</a>
+  </div>
+  <script>
+    // Adjust link for repository basePath
+    var pathSegments = window.location.pathname.split('/').filter(Boolean);
+    if (pathSegments.length > 0) {
+      document.getElementById('homeLink').href = '/' + pathSegments[0] + '/';
+    }
+  </script>
+</body>
+</html>
+

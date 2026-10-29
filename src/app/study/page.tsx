@@ -73,7 +73,8 @@ export default function StudyPage() {
   const [activeModuleIndex, setActiveModuleIndex] = useState<number>(0);
   const [activeModalTab, setActiveModalTab] = useState<"video" | "pdf" | "syllabus">("video");
   const [enrolledCourses, setEnrolledCourses] = useState<Record<string, boolean>>({});
-  const [activeTab, setActiveTab] = useState<"all" | "enrolled">("all");
+  const [activeTab, setActiveTab] = useState<"all" | "enrolled" | "videos">("all");
+  const [selectedVideoLang, setSelectedVideoLang] = useState<string>("All");
   const [copiedCodeIndex, setCopiedCodeIndex] = useState<string | null>(null);
   const [pdfReaderOpen, setPdfReaderOpen] = useState<boolean>(false);
 
@@ -315,6 +316,17 @@ export default function StudyPage() {
               <Bookmark className="w-3.5 h-3.5 text-indigo-500" />
               My Saved ({enrolledCount})
             </button>
+            <button
+              onClick={() => setActiveTab("videos")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                activeTab === "videos"
+                  ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+              }`}
+            >
+              <Video className="w-3.5 h-3.5 text-rose-500" />
+              Video Library
+            </button>
           </div>
 
           <select
@@ -342,40 +354,179 @@ export default function StudyPage() {
         </div>
       </div>
 
-      {/* Courses Grid */}
-      {filteredCourses.length === 0 ? (
-        <div className="card p-12 text-center space-y-4">
-          <div className="w-16 h-16 rounded-full bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto">
-            <Search className="w-8 h-8" />
+      {/* Programming Video Library View */}
+      {activeTab === "videos" ? (
+        <div className="space-y-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
+            <div>
+              <h3 className="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+                <Video className="w-4 h-4 text-rose-500" />
+                Featured Programming Video Playlists
+              </h3>
+              <p className="text-xs text-slate-500">
+                Full-length curated bootcamps for Java, Python, Python DSA, and Web Development.
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              {["All", "Java", "Python", "Python DSA", "C++", "Web"].map((lang) => (
+                <button
+                  key={lang}
+                  onClick={() => setSelectedVideoLang(lang)}
+                  className={`px-3 py-1 rounded-xl text-xs font-semibold transition-colors ${
+                    selectedVideoLang === lang
+                      ? "bg-indigo-600 text-white"
+                      : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
+                  }`}
+                >
+                  {lang}
+                </button>
+              ))}
+            </div>
           </div>
-          <h3 className="text-xl font-bold text-slate-900 dark:text-white">No courses match your criteria</h3>
-          <p className="text-slate-500 text-sm max-w-md mx-auto">
-            Try adjusting your search query, clearing filters, or switching departments.
-          </p>
-          <button
-            onClick={() => {
-              setSelectedDeptId("All");
-              setSelectedLevel("All");
-              setSelectedType("All");
-              setSearchQuery("");
-              setActiveTab("all");
-            }}
-            className="btn-primary text-sm py-2 px-5"
-          >
-            Reset All Filters
-          </button>
-        </div>
-      ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filteredCourses.map((course) => {
-            const isEnrolled = !!enrolledCourses[course.id];
-            const dept = DEPARTMENTS.find((d) => d.id === course.department);
 
-            return (
-              <div
-                key={course.id}
-                className="card flex flex-col justify-between p-6 hover:border-indigo-500/40 hover:shadow-xl transition-all group border border-slate-200 dark:border-slate-800/80 relative"
-              >
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {[
+              {
+                id: "v-py-dsa",
+                lang: "Python DSA",
+                title: "Python Data Structures & Algorithms Masterclass",
+                instructor: "NeetCode / FreeCodeCamp",
+                duration: "10h 30m",
+                youtubeId: "pkYVOmU3MgA",
+                topics: ["Arrays & Hashing", "Two Pointers", "Sliding Window", "Trees BFS/DFS", "Dynamic Programming"],
+              },
+              {
+                id: "v-py",
+                lang: "Python",
+                title: "Python 3 Full Programming Bootcamp 2026",
+                instructor: "Corey Schafer / FreeCodeCamp",
+                duration: "8h 15m",
+                youtubeId: "rfscVS0vtbw",
+                topics: ["Language Fundamentals", "OOP & Dunder Methods", "Decorators & Generators", "File I/O & JSON"],
+              },
+              {
+                id: "v-jav-dsa",
+                lang: "Java",
+                title: "Complete DSA with Java Placement Bootcamp",
+                instructor: "Kunal Kushwaha",
+                duration: "14h 45m",
+                youtubeId: "rZ41y93P2Qo",
+                topics: ["Bit Manipulation", "Recursion", "Binary Search", "Trees & BST", "Graph Algorithms"],
+              },
+              {
+                id: "v-jav",
+                lang: "Java",
+                title: "Java Full Course: From Zero to Hero",
+                instructor: "Telusko / Programming with Mosh",
+                duration: "9h 20m",
+                youtubeId: "eIrMbAQSU34",
+                topics: ["Java Syntax", "Collections Framework", "Streams API", "Multithreading", "Spring Boot Intro"],
+              },
+              {
+                id: "v-cpp",
+                lang: "C++",
+                title: "C++ Programming Full Course for Beginners",
+                instructor: "FreeCodeCamp / Caleb Curry",
+                duration: "4h 00m",
+                youtubeId: "vLnPwxZdW4Y",
+                topics: ["Pointers & Memory", "Classes & Structs", "STL Containers", "Templates", "Vectors"],
+              },
+              {
+                id: "v-web",
+                lang: "Web",
+                title: "Full Stack Web Development (React & Node.js)",
+                instructor: "Dave Gray / Traversy Media",
+                duration: "8h 30m",
+                youtubeId: "mScd-5ci3_M",
+                topics: ["React 19 Hooks", "Tailwind CSS", "REST APIs", "Node & Express", "Deployment"],
+              },
+            ]
+              .filter((v) => selectedVideoLang === "All" || v.lang === selectedVideoLang)
+              .map((vid) => (
+                <div
+                  key={vid.id}
+                  className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between"
+                >
+                  <div className="relative aspect-video bg-black">
+                    <iframe
+                      src={`https://www.youtube-nocookie.com/embed/${vid.youtubeId}?rel=0`}
+                      title={vid.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-full border-0"
+                    />
+                  </div>
+                  <div className="p-5 space-y-3 flex-1 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between text-xs mb-2">
+                        <span className="font-bold px-2 py-0.5 rounded bg-rose-50 dark:bg-rose-950 text-rose-600 dark:text-rose-400">
+                          {vid.lang}
+                        </span>
+                        <span className="text-slate-400 flex items-center gap-1">
+                          <Clock className="w-3 h-3" /> {vid.duration}
+                        </span>
+                      </div>
+                      <h4 className="font-bold text-sm text-slate-900 dark:text-white leading-snug">
+                        {vid.title}
+                      </h4>
+                      <p className="text-xs text-slate-500 mt-1">Instructor: {vid.instructor}</p>
+                    </div>
+
+                    <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+                      <p className="text-[11px] font-semibold text-slate-400 mb-1.5 uppercase">Key Modules:</p>
+                      <div className="flex flex-wrap gap-1">
+                        {vid.topics.map((top, idx) => (
+                          <span
+                            key={idx}
+                            className="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
+                          >
+                            {top}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+          </div>
+        </div>
+      ) : null}
+
+      {/* Courses Grid */}
+      {activeTab !== "videos" && (
+        filteredCourses.length === 0 ? (
+          <div className="card p-12 text-center space-y-4">
+            <div className="w-16 h-16 rounded-full bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto">
+              <Search className="w-8 h-8" />
+            </div>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white">No courses match your criteria</h3>
+            <p className="text-slate-500 text-sm max-w-md mx-auto">
+              Try adjusting your search query, clearing filters, or switching departments.
+            </p>
+            <button
+              onClick={() => {
+                setSelectedDeptId("All");
+                setSelectedLevel("All");
+                setSelectedType("All");
+                setSearchQuery("");
+                setActiveTab("all");
+              }}
+              className="btn-primary text-sm py-2 px-5"
+            >
+              Reset All Filters
+            </button>
+          </div>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {filteredCourses.map((course) => {
+              const isEnrolled = !!enrolledCourses[course.id];
+              const dept = DEPARTMENTS.find((d) => d.id === course.department);
+
+              return (
+                <div
+                  key={course.id}
+                  className="card flex flex-col justify-between p-6 hover:border-indigo-500/40 hover:shadow-xl transition-all group border border-slate-200 dark:border-slate-800/80 relative"
+                >
                 {/* Top Badges */}
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-3">
@@ -491,7 +642,7 @@ export default function StudyPage() {
             );
           })}
         </div>
-      )}
+      ))}
 
       {/* Main Interactive Video Classroom & PDF Modal */}
       {activeCourseModal && (
