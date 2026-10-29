@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useMemo, useRef } from "react";
 import {
@@ -368,7 +368,7 @@ export default function StudyPage() {
               </p>
             </div>
             <div className="flex items-center gap-2">
-              {["All", "Java", "Python", "Python DSA", "C++", "Web"].map((lang) => (
+              {["All", "Java", "Python", "Python DSA", "C++", "Web", "Communication", "Skill Dev", "GD", "Aptitude", "Soft Skills"].map((lang) => (
                 <button
                   key={lang}
                   onClick={() => setSelectedVideoLang(lang)}
@@ -386,60 +386,32 @@ export default function StudyPage() {
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {[
-              {
-                id: "v-py-dsa",
-                lang: "Python DSA",
-                title: "Python Data Structures & Algorithms Masterclass",
-                instructor: "NeetCode / FreeCodeCamp",
-                duration: "10h 30m",
-                youtubeId: "pkYVOmU3MgA",
-                topics: ["Arrays & Hashing", "Two Pointers", "Sliding Window", "Trees BFS/DFS", "Dynamic Programming"],
-              },
-              {
-                id: "v-py",
-                lang: "Python",
-                title: "Python 3 Full Programming Bootcamp 2026",
-                instructor: "Corey Schafer / FreeCodeCamp",
-                duration: "8h 15m",
-                youtubeId: "rfscVS0vtbw",
-                topics: ["Language Fundamentals", "OOP & Dunder Methods", "Decorators & Generators", "File I/O & JSON"],
-              },
-              {
-                id: "v-jav-dsa",
-                lang: "Java",
-                title: "Complete DSA with Java Placement Bootcamp",
-                instructor: "Kunal Kushwaha",
-                duration: "14h 45m",
-                youtubeId: "rZ41y93P2Qo",
-                topics: ["Bit Manipulation", "Recursion", "Binary Search", "Trees & BST", "Graph Algorithms"],
-              },
-              {
-                id: "v-jav",
-                lang: "Java",
-                title: "Java Full Course: From Zero to Hero",
-                instructor: "Telusko / Programming with Mosh",
-                duration: "9h 20m",
-                youtubeId: "eIrMbAQSU34",
-                topics: ["Java Syntax", "Collections Framework", "Streams API", "Multithreading", "Spring Boot Intro"],
-              },
-              {
-                id: "v-cpp",
-                lang: "C++",
-                title: "C++ Programming Full Course for Beginners",
-                instructor: "FreeCodeCamp / Caleb Curry",
-                duration: "4h 00m",
-                youtubeId: "vLnPwxZdW4Y",
-                topics: ["Pointers & Memory", "Classes & Structs", "STL Containers", "Templates", "Vectors"],
-              },
-              {
-                id: "v-web",
-                lang: "Web",
-                title: "Full Stack Web Development (React & Node.js)",
-                instructor: "Dave Gray / Traversy Media",
-                duration: "8h 30m",
-                youtubeId: "mScd-5ci3_M",
-                topics: ["React 19 Hooks", "Tailwind CSS", "REST APIs", "Node & Express", "Deployment"],
-              },
+              { id: "v-py-dsa", lang: "Python DSA", title: "Python Data Structures & Algorithms Masterclass", instructor: "NeetCode / FreeCodeCamp", duration: "10h 30m", youtubeId: "pkYVOmU3MgA", topics: ["Arrays & Hashing", "Two Pointers", "Sliding Window", "Trees BFS/DFS", "Dynamic Programming"] },
+              { id: "v-py", lang: "Python", title: "Python 3 Full Programming Bootcamp 2026", instructor: "Corey Schafer / FreeCodeCamp", duration: "8h 15m", youtubeId: "rfscVS0vtbw", topics: ["Language Fundamentals", "OOP & Dunder Methods", "Decorators & Generators", "File I/O & JSON"] },
+              { id: "v-jav-dsa", lang: "Java", title: "Complete DSA with Java Placement Bootcamp", instructor: "Kunal Kushwaha", duration: "14h 45m", youtubeId: "rZ41y93P2Qo", topics: ["Bit Manipulation", "Recursion", "Binary Search", "Trees & BST", "Graph Algorithms"] },
+              { id: "v-jav", lang: "Java", title: "Java Full Course: From Zero to Hero", instructor: "Telusko / Programming with Mosh", duration: "9h 20m", youtubeId: "eIrMbAQSU34", topics: ["Java Syntax", "Collections Framework", "Streams API", "Multithreading", "Spring Boot Intro"] },
+              { id: "v-cpp", lang: "C++", title: "C++ Programming Full Course for Beginners", instructor: "FreeCodeCamp / Caleb Curry", duration: "4h 00m", youtubeId: "vLnPwxZdW4Y", topics: ["Pointers & Memory", "Classes & Structs", "STL Containers", "Templates", "Vectors"] },
+              { id: "v-web", lang: "Web", title: "Full Stack Web Development (React & Node.js)", instructor: "Dave Gray / Traversy Media", duration: "8h 30m", youtubeId: "mScd-5ci3_M", topics: ["React 19 Hooks", "Tailwind CSS", "REST APIs", "Node & Express", "Deployment"] },
+              { id: "v-sql", lang: "Web", title: "SQL Full Course for Beginners", instructor: "FreeCodeCamp", duration: "4h 20m", youtubeId: "HXV3zeQKqGY", topics: ["SELECT & WHERE", "JOIN Types", "GROUP BY", "Subqueries", "Transactions"] },
+              { id: "v-react", lang: "Web", title: "React Full Course 2024", instructor: "Dave Gray", duration: "9h 00m", youtubeId: "CgkZ7MvWUAA", topics: ["React Hooks", "Context API", "React Router", "Fetch & Axios", "Deployment"] },
+              { id: "v-git", lang: "Web", title: "Git & GitHub Complete Tutorial", instructor: "FreeCodeCamp", duration: "3h 00m", youtubeId: "RGOj5yH7evk", topics: ["Git Init & Commit", "Branching", "Merging", "Pull Requests", "GitHub Actions"] },
+              { id: "v-linux", lang: "Web", title: "Linux Command Line Full Course", instructor: "Fireship", duration: "1h 00m", youtubeId: "sWbUDq4S6Y8", topics: ["File System", "Bash Scripting", "Permissions", "Cron Jobs", "SSH"] },
+              { id: "v-comm1", lang: "Communication", title: "Communication Skills in English for the Workplace", instructor: "FreeCodeCamp / Skillful", duration: "3h 45m", youtubeId: "D5hGuFXxjX4", topics: ["Professional Speaking", "Email Writing", "Active Listening", "Presentations", "Meetings"] },
+              { id: "v-comm2", lang: "Communication", title: "Public Speaking & Presentation Skills Masterclass", instructor: "TED / Toastmasters", duration: "2h 30m", youtubeId: "b0ZlK0JqfCg", topics: ["Overcoming Stage Fright", "Voice Modulation", "Body Language", "Slide Design", "Q&A Handling"] },
+              { id: "v-comm3", lang: "Communication", title: "Professional Email Writing Skills", instructor: "Business English Pod", duration: "1h 20m", youtubeId: "p57S4V2vEw0", topics: ["Email Structure", "Tone & Formality", "Subject Lines", "Follow-ups", "CC & BCC Etiquette"] },
+              { id: "v-comm4", lang: "Communication", title: "English Speaking Practice – Daily Conversations", instructor: "Learn English with TV Series", duration: "2h 00m", youtubeId: "WzKQ_6e0V40", topics: ["Greetings", "Small Talk", "Giving Opinions", "Agreement & Disagreement", "Polite Requests"] },
+              { id: "v-gd1", lang: "GD", title: "Group Discussion Techniques for Campus Placements", instructor: "Skillopedia", duration: "45m", youtubeId: "V5d_l9gU49o", topics: ["How to Initiate GD", "Fish Market Strategy", "Consensus Building", "Summarizing", "Do's & Don'ts"] },
+              { id: "v-gd2", lang: "GD", title: "GD Topics with Sample Answers 2024", instructor: "CareerVidz", duration: "1h 10m", youtubeId: "lmyZMtPVodo", topics: ["Technology GD Topics", "Social Issues", "Economics Topics", "Argument Building", "Counter Arguments"] },
+              { id: "v-gd3", lang: "GD", title: "Group Discussion Do's and Don'ts", instructor: "HR Interview Prep", duration: "35m", youtubeId: "81eK0bUfLzE", topics: ["Body Language in GD", "Interruption Etiquette", "Time Management", "Role of Summarizer", "Devil's Advocate"] },
+              { id: "v-skd1", lang: "Skill Dev", title: "How to Learn Anything Faster – Feynman Technique", instructor: "Thomas Frank", duration: "12m", youtubeId: "dItUGF8GdTw", topics: ["Feynman Method", "Identify Knowledge Gaps", "Simplify Concepts", "Teaching Others", "Iterative Learning"] },
+              { id: "v-skd2", lang: "Skill Dev", title: "Time Management Masterclass – Pomodoro & Deep Work", instructor: "Ali Abdaal", duration: "1h 00m", youtubeId: "iONDebHX9qk", topics: ["Pomodoro Technique", "Deep Work Blocks", "Priority Matrix", "Digital Minimalism", "Energy Management"] },
+              { id: "v-skd3", lang: "Skill Dev", title: "Growth Mindset vs Fixed Mindset", instructor: "TED-Ed", duration: "10m", youtubeId: "M1CHPnZfFmU", topics: ["Carol Dweck Research", "Embracing Challenges", "Learning from Failure", "Effort vs Talent", "Neuroplasticity"] },
+              { id: "v-skd4", lang: "Skill Dev", title: "Leadership Skills for Engineering Students", instructor: "MindTools", duration: "55m", youtubeId: "u4ZoJKF_VuA", topics: ["Situational Leadership", "Team Motivation", "Delegation", "Conflict Resolution", "Decision Making"] },
+              { id: "v-apt1", lang: "Aptitude", title: "Quantitative Aptitude Full Course in 3 Hours", instructor: "CareerRide", duration: "3h 00m", youtubeId: "XQx91n5U9eY", topics: ["Number System", "Percentages", "Ratios", "Time & Work", "Profit & Loss"] },
+              { id: "v-apt2", lang: "Aptitude", title: "Logical Reasoning Masterclass", instructor: "PrepInsta", duration: "2h 00m", youtubeId: "yuTk3E-K7oE", topics: ["Syllogisms", "Blood Relations", "Seating Arrangements", "Coding-Decoding", "Puzzles"] },
+              { id: "v-soft1", lang: "Soft Skills", title: "Body Language Secrets for Job Interviews", instructor: "Charisma on Command", duration: "15m", youtubeId: "Ks-_Mh1QhMc", topics: ["Power Poses", "Eye Contact", "Handshake", "Mirroring", "Avoiding Nervous Habits"] },
+              { id: "v-soft2", lang: "Soft Skills", title: "How to Answer Tell Me About Yourself", instructor: "Jeff Su", duration: "8m", youtubeId: "1mHjMNZZvFo", topics: ["Present-Past-Future Formula", "Tailoring to JD", "Confidence Tips", "Common Mistakes", "Practice Template"] },
+              { id: "v-soft3", lang: "Soft Skills", title: "Confidence Building Techniques", instructor: "Brian Tracy", duration: "45m", youtubeId: "ZkwqZfvahSE", topics: ["Self-Image", "Positive Self-Talk", "Visualization", "Comfort Zone Expansion", "Daily Habits"] },
             ]
               .filter((v) => selectedVideoLang === "All" || v.lang === selectedVideoLang)
               .map((vid) => (
@@ -1319,3 +1291,4 @@ export default function StudyPage() {
     </div>
   );
 }
+
