@@ -4,7 +4,7 @@ import Link from "next/link";
 import {
   Sparkles, ArrowRight, Bot, FileText, Map, Brain,
   GraduationCap, Briefcase, User, ShieldCheck, Zap,
-  Compass, CheckCircle2, ChevronRight
+  Compass, CheckCircle2, ChevronRight, Award, MessageCircle, CheckSquare, BookOpen
 } from "lucide-react";
 
 export default function HomePage() {
@@ -43,11 +43,35 @@ export default function HomePage() {
     },
     {
       title: "Placement Preparation",
-      desc: "Targeted technical interview questions, system design walkthroughs, and company-specific prep modules.",
+      desc: "Targeted technical interview questions, system design walkthroughs, and company-specific prep modules across 16 core tracks.",
       href: "/prep",
       icon: GraduationCap,
       color: "from-emerald-500 to-teal-600",
-      badge: "Interviews",
+      badge: "16 Tracks",
+    },
+    {
+      title: "Soft Skills & Leadership",
+      desc: "Master the 12 executive soft skills: active listening, presentation decks, workplace etiquette, and confidence drills.",
+      href: "/soft-skills",
+      icon: Award,
+      color: "from-purple-500 to-indigo-600",
+      badge: "12 Modules",
+    },
+    {
+      title: "English & Communication Lab",
+      desc: "50+ daily corporate sentences, Web Speech native pronunciation audio, GD playbook, and timed speaking drills.",
+      href: "/communication",
+      icon: MessageCircle,
+      color: "from-blue-500 to-cyan-600",
+      badge: "Speech Lab",
+    },
+    {
+      title: "Technical Assignments & Labs",
+      desc: "Subject assessments for DSA, Java, Python, and SQL with code testing, question runner, and instant grading.",
+      href: "/assignments",
+      icon: CheckSquare,
+      color: "from-teal-500 to-emerald-600",
+      badge: "Automated Tests",
     },
     {
       title: "Application Tracker",
@@ -92,18 +116,21 @@ export default function HomePage() {
             </div>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-600 dark:text-slate-300">
+          <nav className="hidden lg:flex items-center gap-5 text-sm font-semibold text-slate-600 dark:text-slate-300">
             <Link href="/dashboard" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
               Dashboard
             </Link>
-            <Link href="/roadmap/1" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-              Roadmaps
+            <Link href="/prep" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+              Placement Prep
+            </Link>
+            <Link href="/soft-skills" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+              Soft Skills
+            </Link>
+            <Link href="/assignments" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+              Assignments
             </Link>
             <Link href="/resume" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
               Resume Builder
-            </Link>
-            <Link href="/prep" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-              Placement Prep
             </Link>
             <Link href="/profile" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
               Profile

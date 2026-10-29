@@ -110,8 +110,21 @@ export default function JobsPage() {
   const [applications, setApplications] = useState<any[]>([]);
 
   useEffect(() => {
+    // 1. Load saved applications from localStorage first
+    try {
+      const savedApps = localStorage.getItem("careerpilot_applications");
+      if (savedApps) {
+        setApplications(JSON.parse(savedApps));
+      }
+    } catch {
+      // Ignore
+    }
+
     fetch('/api/jobs')
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error("API not available");
+        return res.json();
+      })
       .then(data => {
         if (Array.isArray(data) && data.length > 0) {
           setJobs(data);
@@ -120,14 +133,20 @@ export default function JobsPage() {
         }
         return fetch('/api/applications');
       })
-      .then(res => res.json())
+      .then(res => {
+        if (res && res.ok) return res.json();
+        return [];
+      })
       .then(appData => {
-        if (Array.isArray(appData)) {
-          setApplications(appData);
+        if (Array.isArray(appData) && appData.length > 0) {
+          setApplications(prev => {
+            const combined = [...prev, ...appData];
+            const unique = Array.from(new Map(combined.map(a => [a.jobId, a])).values());
+            return unique;
+          });
         }
       })
-      .catch(err => {
-        console.error('Failed to fetch jobs or applications', err);
+      .catch(() => {
         setJobs(DEFAULT_JOBS);
       })
       .finally(() => {
@@ -320,21 +339,23 @@ export default function JobsPage() {
                     }`}
                     disabled={isApplied}
                     onClick={async () => {
+                      const newApp = { jobId: job.id, status: 'APPLIED', appliedAt: new Date().toISOString() };
+                      setApplications(prev => {
+                        const updated = [...prev, newApp];
+                        try {
+                          localStorage.setItem("careerpilot_applications", JSON.stringify(updated));
+                        } catch {}
+                        return updated;
+                      });
+
                       try {
-                        const res = await fetch('/api/applications', {
+                        await fetch('/api/applications', {
                           method: 'POST',
                           headers: { 'Content-Type': 'application/json' },
                           body: JSON.stringify({ jobId: job.id }),
                         });
-                        if (res.ok) {
-                          const newApp = await res.json();
-                          setApplications(prev => [...prev, newApp]);
-                        } else {
-                          const err = await res.json();
-                          console.error('Apply error', err);
-                        }
-                      } catch (e) {
-                        console.error('Apply exception', e);
+                      } catch {
+                        // Offline or static export fallback already saved in localStorage
                       }
                     }}
                   >
